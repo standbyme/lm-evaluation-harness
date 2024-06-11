@@ -9,6 +9,8 @@ from typing import TYPE_CHECKING, List, Optional, Union
 import numpy as np
 import torch
 
+from lm_eval.patch import dump_prompts
+
 import lm_eval.api.metrics
 import lm_eval.api.registry
 import lm_eval.models
@@ -404,6 +406,9 @@ def evaluate(
         )
         if write_out:
             print_writeout(task)
+        
+        dump_prompts(task)
+
         # aggregate Instances by LM method requested to get output.
         for instance in task.instances:
             reqtype = instance.request_type
@@ -425,6 +430,7 @@ def evaluate(
             # todo: may not account for padding in cases like SquadV2 which has multiple req types
             padding_requests[reqtype] += numpad
 
+    exit(0)
     ### Run LM on inputs, get all outputs ###
     # execute each type of request
     for reqtype, reqs in requests.items():
